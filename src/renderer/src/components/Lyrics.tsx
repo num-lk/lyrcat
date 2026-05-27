@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { MusicIcon } from 'lucide-react'
+import { MusicIcon, LoaderCircleIcon } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useFetch, type Fetcher } from '@renderer/hooks/fetch'
 import { useInputReducer } from '@renderer/hooks/navigation'
@@ -146,7 +146,9 @@ function Lyrics({
   // Scroll current lyric to center
   useEffect(
     () =>
-      document.getElementById('current')?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+      document
+        .querySelector(index === -1 ? '.lyric' : '#current')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
     [index]
   )
 
@@ -159,29 +161,30 @@ function Lyrics({
     <div className="lyrics">
       <div className="offset" />
       {query.status === 'LOADING' ? (
-        <p>Loading...</p>
+        <LoaderCircleIcon className="loader" />
+      ) : lyrics.length === 0 ? (
+        <p>No lyrics available</p>
       ) : (
-        lyrics.length === 0 && <p>No lyrics available</p>
+        lyrics.map((l, i) => {
+          const diff = Math.min(Math.abs((i - index) * 2) ** 0.7, 4)
+          return (
+            <motion.p
+              id={i === index ? 'current' : undefined}
+              onClick={clickHandlerFactory(l.timestamp)}
+              key={l.timestamp}
+              animate={{
+                scale: 1 - diff * 0.1,
+                opacity: 1 - diff * 0.05,
+                marginBlock: (4 - diff) * 6,
+                filter: `blur(${diff * 0.5}px) drop-shadow(0 0 10px ${diff === 0 ? 'rgba(255 255 255 / 0.5)' : 'transparent'})`
+              }}
+              className="lyric"
+            >
+              {l.text?.trim() || <MusicIcon size={32} />}
+            </motion.p>
+          )
+        })
       )}
-      {lyrics.map((l, i) => {
-        const diff = Math.min(Math.abs((i - index) * 2) ** 0.7, 4)
-        return (
-          <motion.p
-            id={i === index ? 'current' : undefined}
-            onClick={clickHandlerFactory(l.timestamp)}
-            key={l.timestamp}
-            animate={{
-              scale: 1 - diff * 0.1,
-              opacity: 1 - diff * 0.05,
-              marginBlock: (4 - diff) * 6,
-              filter: `blur(${diff * 0.5}px) drop-shadow(0 0 10px ${diff === 0 ? 'rgba(255 255 255 / 0.5)' : 'transparent'})`
-            }}
-            className="tip"
-          >
-            {l.text?.trim() || <MusicIcon size={32} />}
-          </motion.p>
-        )
-      })}
       <div className="offset" />
     </div>
   )
