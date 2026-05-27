@@ -47,6 +47,10 @@ code {
   }
 }
 
+.loader {
+  animation: spin 2s linear infinite;
+}
+
 .logo {
   animation: spin 8s linear infinite;
   margin-bottom: 20px;
@@ -97,7 +101,7 @@ code {
 }
 
 .offset {
-  height: 24vh;
+  height: 30vh;
 }
 
 .tip {
