@@ -3,6 +3,7 @@ import { MusicIcon } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useFetch, type Fetcher } from '@renderer/hooks/fetch'
 import { useInputReducer } from '@renderer/hooks/navigation'
+import { useInterval } from '@renderer/hooks/interval'
 
 type SyncedLyric = {
   text: string
@@ -25,7 +26,11 @@ const refreshInterval = 200 as const
 // Lyric offset in ms
 const globalOffset = -200 as const
 
-async function fetchLyrics(params: Record<string, string>, fetch: Fetcher): Promise<SyncedLyric[]> {
+async function fetchLyrics(
+  params: Record<string, string>,
+  fetch: Fetcher,
+  request: RequestInit
+): Promise<SyncedLyric[]> {
   // Create query from given params
   const endpoint =
     'https://lrclib.net:443/api/search?' +
@@ -40,7 +45,7 @@ async function fetchLyrics(params: Record<string, string>, fetch: Fetcher): Prom
   if (cached) return cached
 
   // Otherwise fetch from API
-  const res = await fetch<LyricsRecord[]>(endpoint)
+  const res = await fetch<LyricsRecord[]>(endpoint, request)
 
   // Early return for unsuccesful request
   if (!res.data) return []
@@ -85,12 +90,17 @@ function Lyrics({
 
   // Function for updating position while refreshing index
   const setPosition = useCallback(
-    (pos: number) => {
-      position.current = pos
-      setIndex(lyrics.findLastIndex((l) => l.timestamp + globalOffset <= position.current) ?? 0)
+    (pos?: number) => {
+      position.current = pos == null ? position.current + refreshInterval : pos
+      const newIndex =
+        lyrics.findLastIndex((l) => l.timestamp + globalOffset <= position.current) ?? 0
+      if (newIndex != index) setIndex(newIndex)
     },
-    [lyrics]
+    [lyrics, index]
   )
+
+  // Create interval for updating position
+  useInterval(setPosition, playing ? refreshInterval : null)
 
   // Function for incrementing current lyric by n lines
   const incrementIndex = (n: number): void => {
@@ -110,26 +120,23 @@ function Lyrics({
   // Fetch lyrics upon song change
   useEffect(() => {
     console.warn('Fetching lyrics...')
-    fetchLyrics({ artist_name: artist, track_name: title }, fetch).then(setLyrics)
+
+    // Create controller to cancel requests
+    const controller = new AbortController()
+    const { signal } = controller
+
+    fetchLyrics({ artist_name: artist, track_name: title }, fetch, { signal }).then(setLyrics)
 
     // Reset position
     window.api.playerPosition().then((pos) => (position.current = pos))
+
+    return () => controller.abort()
   }, [title, artist, fetch])
 
   // Update position when player position changes
   useEffect(() => {
     return window.api.onPlayerPosition(setPosition)
   }, [setPosition])
-
-  // Increment position while playing
-  useEffect(() => {
-    if (!playing) return
-    const interval = setInterval(
-      () => setPosition(position.current + refreshInterval),
-      refreshInterval
-    )
-    return () => clearInterval(interval)
-  }, [playing, title, artist, setPosition])
 
   // Get initial player position and after unpausing
   useEffect(() => {
