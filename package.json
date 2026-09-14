@@ -1,5 +1,6 @@
 {
   "name": "lyrcat",
+  "desktopName": "Lyrcat",
   "version": "0.1.0",
   "description": "An interactive Electron-based song lyric visualiser powered by Vite and React",
   "main": "./out/main/index.js",
