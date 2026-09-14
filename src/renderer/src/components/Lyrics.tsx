@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { MusicIcon, LoaderCircleIcon } from 'lucide-react'
 import { motion } from 'motion/react'
 import { useFetch, type Fetcher } from '@renderer/hooks/fetch'
 import { useInputReducer } from '@renderer/hooks/navigation'
 import { useInterval } from '@renderer/hooks/interval'
+import { settingsContext } from '@renderer/common/Settings'
 
 type SyncedLyric = {
   text: string
@@ -22,9 +23,6 @@ type LyricsRecord = {
 
 // How often to refresh interval and rerender with latest lyrics in ms
 const refreshInterval = 200 as const
-
-// Lyric offset in ms
-const globalOffset = -200 as const
 
 async function fetchLyrics(
   params: Record<string, string>,
@@ -88,6 +86,9 @@ function Lyrics({
   // Track current player position
   const position = useRef(0)
 
+  // Get global offset from settings
+  const globalOffset = -useContext(settingsContext).settings.lyrics.offset
+
   // Function for updating position while refreshing index
   const setPosition = useCallback(
     (pos?: number) => {
@@ -144,13 +145,11 @@ function Lyrics({
   }, [playing])
 
   // Scroll current lyric to center
-  useEffect(
-    () =>
-      document
-        .querySelector(index === -1 ? '.lyric' : '#current')
-        ?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
-    [index]
-  )
+  useEffect(() => {
+    document
+      .querySelector(index === -1 ? '.lyric' : '#current')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [index])
 
   // A factory for click handlers that seek to the clicked lyric
   const clickHandlerFactory = (pos: number) => () => window.api.seekPlayer(pos)

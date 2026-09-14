@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
-import { PlayIcon, PauseIcon, SkipForwardIcon, SkipBackIcon } from 'lucide-react'
+import { PlayIcon, PauseIcon, SkipForwardIcon, SkipBackIcon, SettingsIcon } from 'lucide-react'
 import { useInputReducer } from '@renderer/hooks/navigation'
 import Lyrics from './components/Lyrics'
+import { SettingsProvider } from './components/settings/SettingsProvider'
+import { SettingsMenu } from './components/settings/Menu'
 
 function App(): React.JSX.Element {
   const pauseHandle = (): void => window.api.pausePlayer()
@@ -10,6 +12,8 @@ function App(): React.JSX.Element {
 
   const [meta, setMeta] = useState<{ title: string; artist: string }>(null!)
   const [playing, setPlaying] = useState(false)
+
+  const [settingsOpen, setSettingsOpen] = useState(true)
 
   // Hook into input reducer
   useInputReducer({
@@ -40,10 +44,11 @@ function App(): React.JSX.Element {
     return window.api.onPlayerUpdate(setMeta)
   }, [])
 
-  console.log('App rerender...')
-
   return (
-    <>
+    <SettingsProvider>
+      <button className="settings" onClick={() => setSettingsOpen(true)}>
+        <SettingsIcon size={28} />
+      </button>
       {meta ? (
         <div className="text">
           Now listening to <span className="ts">{meta.title}</span>
@@ -74,7 +79,8 @@ function App(): React.JSX.Element {
           </a>
         </div>
       </div>
-    </>
+      {settingsOpen && <SettingsMenu onClose={() => setSettingsOpen(false)} />}
+    </SettingsProvider>
   )
 }
 

@@ -7,7 +7,7 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: rgba(0 0 0 / 0.4);
+  background: var(--color-background);
   background-size: cover;
   user-select: none;
 }
@@ -29,6 +29,7 @@ code {
 }
 
 #root {
+  height: 100%;
   flex-grow: 1;
   display: flex;
   position: relative;
@@ -83,6 +84,26 @@ code {
   text-align: center;
   margin: 0 10px;
   padding: 24px 0;
+}
+
+.settings {
+  transition: opacity 0.2s ease-out;
+  aspect-ratio: 1;
+  border: none;
+  color: var(--ev-c-text-1);
+  background: var(--color-background-mute);
+  padding: 0.5rem;
+  margin: 1rem;
+  height: 48px;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+}
+
+.settings:hover {
+  opacity: 1;
 }
 
 .lyrics {

@@ -1,0 +1,36 @@
+.inputs {
+  display: flex;
+  gap: 0.5rem;
+  height: 100%;
+  justify-content: stretch;
+  align-items: stretch;
+
+  input[type='color' i] {
+    aspect-ratio: 1;
+    height: 100%;
+    width: auto;
+    border: none;
+    padding: 0px;
+    background: none;
+  }
+
+  input[type='number'] {
+    height: 100%;
+    width: auto;
+    border: none;
+    padding: 0px;
+    background: none;
+  }
+
+  input[type='color' i]::-webkit-color-swatch-wrapper {
+    padding: 0px;
+    border: none;
+    background: none;
+  }
+
+  input[type='color' i]::-webkit-color-swatch {
+    padding: 0px;
+    border: none;
+    border-radius: 6px;
+  }
+}
