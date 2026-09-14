@@ -97,7 +97,7 @@ function Lyrics({
         lyrics.findLastIndex((l) => l.timestamp + globalOffset <= position.current) ?? 0
       if (newIndex != index) setIndex(newIndex)
     },
-    [lyrics, index]
+    [lyrics, index, globalOffset]
   )
 
   // Create interval for updating position
