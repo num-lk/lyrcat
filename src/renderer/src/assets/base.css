@@ -29,6 +29,7 @@
   --color-background-mute: var(--ev-c-black-mute);
 
   --color-text: var(--ev-c-text-1);
+  --color-lyrics: var(--ev-c-text-2);
 }
 
 *,

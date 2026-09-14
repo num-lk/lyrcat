@@ -108,8 +108,7 @@ code {
   transition: opacity 0.2s ease-out;
   font-size: 36px;
   line-height: 40px;
-  color: var(--ev-c-text-2);
-  color: white;
+  color: var(--color-lyrics);
   font-weight: 600;
 }
 
