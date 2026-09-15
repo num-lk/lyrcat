@@ -30,6 +30,7 @@
 
   --color-text: var(--ev-c-text-1);
   --color-lyrics: var(--ev-c-text-2);
+  --color-lyrics-shadow: var(--ev-c-text-2);
 }
 
 *,

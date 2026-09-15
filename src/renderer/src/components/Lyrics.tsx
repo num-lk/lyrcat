@@ -175,7 +175,7 @@ function Lyrics({
                 scale: 1 - diff * 0.1,
                 opacity: 1 - diff * 0.05,
                 marginBlock: (4 - diff) * 6,
-                filter: `blur(${diff * 0.5}px) drop-shadow(0 0 10px ${diff === 0 ? 'rgba(255 255 255 / 0.5)' : 'transparent'})`
+                filter: `blur(${diff * 0.5}px) drop-shadow(0 0 10px ${diff === 0 ? 'var(--color-lyrics-shadow)' : 'transparent'})`
               }}
               className="lyric"
             >
