@@ -13,7 +13,7 @@ function App(): React.JSX.Element {
   const [meta, setMeta] = useState<{ title: string; artist: string }>(null!)
   const [playing, setPlaying] = useState(false)
 
-  const [settingsOpen, setSettingsOpen] = useState(true)
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   // Hook into input reducer
   useInputReducer({
