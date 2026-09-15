@@ -51,7 +51,7 @@ export function SettingsMenu({ onClose }: { onClose: () => void }): ReactElement
               return (
                 <div key={setting} className={styles.entry}>
                   <span>{`${settingsMeta[category][setting]?.name ?? setting}:`}</span>
-                  <Field {...{ value, callback, key: `${setting}${remountBit}` }} />
+                  <Field {...{ value, callback }} key={`${setting}${remountBit}`} />
                 </div>
               )
             })}
